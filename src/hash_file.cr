@@ -87,10 +87,10 @@ module HashFile
   #flush files from disk
   def clear
     dir = @@config["base_dir"].to_s
-    if dir.eql?("/") || dir.eql?("./")
+    if dir =~ /^\.?\/$/
       return false      
     end
-    FilUtils.rm_r("#{dir}/*")
+    FileUtils.rm_r("#{dir}")
     true
   end
 

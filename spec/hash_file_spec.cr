@@ -81,5 +81,6 @@ describe HashFile do
   it "should delete all files" do
     HashFile["foo"] = "bar"
     HashFile.clear
+    Dir.glob(base_dir).size.should eq(0)
   end
 end
