@@ -77,4 +77,9 @@ describe HashFile do
     HashFile[key].should eq(value)
     FileUtils.rm_r(base_dir)
   end
+
+  it "should delete all files" do
+    HashFile["foo"] = "bar"
+    HashFile.clear
+  end
 end

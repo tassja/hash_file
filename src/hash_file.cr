@@ -34,43 +34,64 @@ module HashFile
     fetch(key, {} of String => String)
   end
 
+  # get value for a given key.
   def fetch(key : String, options : Hash(String, String | Int32 | Time))
     return nil unless key?(key)
-    data = JSON.parse(File.read(to_filename(key)))
+    data = JSON.parse(File.read("#{to_filename(key)}_metadata"))
 
     if ExpireTime.is_expired?(data["expire"].as_i64?)
       FileUtils.rm_r(to_filename(key))
       return nil    
     end
 
-    data["value"]    
+    File.read(to_filename(key))
   end
 
-
+  #set value for a given key
   def []=(key : String, value : String | Number | Time)
     store(key, value, {} of String => String)
   end
 
+  #set value for a given key
   def store(key : String, value : String | Number | Time, options : Hash(String, String | Int32 | Time))
     expire : Int64 | Nil = options.has_key?("expire") ? ExpireTime.to_epoch(options["expire"]) : nil
 
     key_hash : String = to_filename(key)
-    data = {timestamp: Time.now.epoch, expire: expire, key: key, value: value}
+    data = {timestamp: Time.now.epoch, expire: expire, key: key}
     file_path = File.dirname(key_hash)
     file_name = File.basename(key_hash)
 
     Dir.mkdir_p(file_path) unless Dir.exists?(file_path)
-    File.open(key_hash, "wb") do |f|
+    File.open("#{key_hash}_metadata", "wb") do |f|
       f.puts data.to_json
     end
+    File.open(key_hash, "wb") do |f|
+      f.write value.to_slice
+    end
+    true
+  rescue e
+    puts e.message
+    false
   end
 
+  #delete a key
   def delete(key : String)
     key?(key) ? FileUtils.rm_r(to_filename(key)).nil? : false
   end
 
+  #check if a key is expired
   def expired?(key : String)
     fetch(key, {} of String => String).nil?
+  end
+
+  #flush files from disk
+  def clear
+    dir = @@config["base_dir"].to_s
+    if dir.eql?("/") || dir.eql?("./")
+      return false      
+    end
+    FilUtils.rm_r("#{dir}/*")
+    true
   end
 
   # calculate md5 hash
