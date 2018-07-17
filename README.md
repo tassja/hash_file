@@ -1,6 +1,6 @@
 # hash_file
 
-TODO: Write a description here
+A hash function that persists its data onto disk. Useful when creating a simple cache
 
 ## Installation
 
@@ -9,20 +9,21 @@ Add this to your application's `shard.yml`:
 ```yaml
 dependencies:
   hash_file:
-    github: your-github-user/hash_file
+    github: mehmetc/hash_file
 ```
 
 ## Usage
 
 ```crystal
 require "hash_file"
+
+HashFile.config({"base_dir" => "/tmp/cache"})
+HashFile["hello"] = "world"
+HashFile.store("foo", "bar", {"expire" => (Time.now + 5.minute)}) #5 minutes
+puts HashFile['hello']
+HashFile.fetch('foo') unless HashFile.expired?('foo')
+HashFile.delete('hello')
 ```
-
-TODO: Write usage instructions here
-
-## Development
-
-TODO: Write development instructions here
 
 ## Contributing
 
@@ -34,4 +35,4 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [your-github-user](https://github.com/your-github-user) Mehmet Celik - creator, maintainer
+- [mehmetc](https://github.com/mehmetc) Mehmet Celik - creator, maintainer
