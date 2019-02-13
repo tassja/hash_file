@@ -1,5 +1,6 @@
 require "./hash_file/*"
 require "digest/md5"
+require "file_utils"
 require "json"
 
 # HashFile stores data into a file
@@ -41,7 +42,7 @@ module HashFile
 
     if ExpireTime.is_expired?(data["expire"].as_i64?)
       FileUtils.rm_r(to_filename(key))
-      return nil    
+      return nil
     end
 
     File.read(to_filename(key))
@@ -57,7 +58,7 @@ module HashFile
     expire : Int64 | Nil = options.has_key?("expire") ? ExpireTime.to_epoch(options["expire"]) : nil
 
     key_hash : String = to_filename(key)
-    data = {timestamp: Time.now.epoch, expire: expire, key: key}
+    data = {timestamp: Time.now.to_unix, expire: expire, key: key}
     file_path = File.dirname(key_hash)
     file_name = File.basename(key_hash)
 
@@ -88,7 +89,7 @@ module HashFile
   def clear
     dir = @@config["base_dir"].to_s
     if dir =~ /^\.?\/$/
-      return false      
+      return false
     end
     FileUtils.rm_r("#{dir}")
     true
