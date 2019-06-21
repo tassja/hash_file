@@ -1,9 +1,9 @@
 name: hash_file
-version: 0.2.0
+version: 0.3.0
 
 authors:
   - Mehmet Celik <mehmet@celik.be>
 
-crystal: 0.27.2
+crystal: 0.29
 
 license: MIT
