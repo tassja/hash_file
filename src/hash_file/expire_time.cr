@@ -11,9 +11,9 @@ module ExpireTime
         Time.parse(raw_expire, "%F %T %:z", Time::Location.local).to_unix
     end
 
-    def is_expired?(epoch_time : Int64 | Nil = Time.now)
+    def is_expired?(epoch_time : Int64 | Nil = Time.local)
         return false if epoch_time.nil?
-        Time.now > Time.unix(epoch_time)
+        Time.local > Time.unix(epoch_time)
     end
 
 end

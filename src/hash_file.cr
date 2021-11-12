@@ -58,7 +58,7 @@ module HashFile
     expire : Int64 | Nil = options.has_key?("expire") ? ExpireTime.to_epoch(options["expire"]) : nil
 
     key_hash : String = to_filename(key)
-    data = {timestamp: Time.now.to_unix, expire: expire, key: key}
+    data = {timestamp: Time.local.to_unix, expire: expire, key: key}
     file_path = File.dirname(key_hash)
     file_name = File.basename(key_hash)
 

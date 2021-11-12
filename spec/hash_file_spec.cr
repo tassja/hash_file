@@ -8,9 +8,8 @@ value = "world"
 
 HashFile.config({"spread" => 0, "base_dir" => base_dir})
 
-
 describe HashFile do
-  it "hashes a key" do    
+  it "hashes a key" do
     HashFile.to_filename(key).should eq(key_hash_path)
   end
 
@@ -28,7 +27,7 @@ describe HashFile do
   it "should take a spread of 0" do
     HashFile.config({"spread" => 0})
     HashFile.to_filename(key).should eq(key_hash_path)
-  end 
+  end
 
   it "should create an entry" do
     HashFile[key] = value
@@ -42,7 +41,7 @@ describe HashFile do
 
   it "should have a spread of 0" do
     HashFile.config["spread"].should eq(0)
-  end  
+  end
 
   it "should delete a key" do
     HashFile[key] = "world"
@@ -56,14 +55,14 @@ describe HashFile do
   end
 
   it "should expire after 3 seconds" do
-    t = Time.now + Time::Span.new(0,0,3)
+    t = Time.local + 3.seconds
     HashFile.store(key, value, {"expire" => t})
     sleep 4
     HashFile[key].should be_nil
   end
 
   it "key should be expired" do
-    t = Time.now + Time::Span.new(0,0,3)
+    t = Time.local + 3.seconds
     HashFile.store(key, value, {"expire" => t})
     HashFile.expired?(key).should be_false
     sleep 4
@@ -71,7 +70,7 @@ describe HashFile do
   end
 
   it "should not expire after 3 seconds" do
-    t = Time.now + Time::Span.new(0,0,30)
+    t = Time.local + 30.seconds
     HashFile.store(key, value, {"expire" => t})
     sleep 4
     HashFile[key].should eq(value)

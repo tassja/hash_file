@@ -19,7 +19,7 @@ require "hash_file"
 
 HashFile.config({"base_dir" => "/tmp/cache"})
 HashFile["hello"] = "world"
-HashFile.store("foo", "bar", {"expire" => (Time.now + 5.minute)}) #5 minutes
+HashFile.store("foo", "bar", {"expire" => (Time.local + 5.minute)}) #5 minutes
 puts HashFile["hello"]
 HashFile.fetch("foo") unless HashFile.expired?("foo")
 HashFile.delete("hello")
